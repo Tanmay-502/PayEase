@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Custom High-Contrast Material Input Layout Style -->
+    <style name="Widget.PayEase.TextInputLayout.OutlinedBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/color_box_stroke</item>
+        <item name="boxStrokeWidth">1.5dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
+        <item name="hintTextColor">@color/primary</item>
+        <item name="android:textColorHint">@color/text_muted</item>
+        <item name="prefixTextColor">@color/text_primary</item>
+        <item name="suffixTextColor">@color/text_primary</item>
+        <item name="errorTextColor">@color/error</item>
+        <item name="boxStrokeErrorColor">@color/error</item>
+        <item name="passwordToggleTint">@color/text_secondary</item>
+    </style>
+
+    <!-- Custom TextInputEditText Style -->
+    <style name="Widget.PayEase.TextInputEditText" parent="Widget.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorHint">@color/text_muted</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- Custom Light PayEase Alert Dialog Theme -->
+    <style name="PayEaseAlertDialogTheme" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="android:background">@color/card_background</item>
+        <item name="colorSurface">@color/card_background</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/PayEaseDialogTitleText</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/PayEaseDialogBodyText</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PayEaseDialogPositiveButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/PayEaseDialogNegativeButton</item>
+    </style>
+
+    <style name="PayEaseDialogTitleText" parent="MaterialAlertDialog.Material3.Title.Text">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="PayEaseDialogBodyText" parent="MaterialAlertDialog.Material3.Body.Text">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="PayEaseDialogPositiveButton" parent="Widget.Material3.Button.TextButton">
+        <item name="android:textColor">@color/primary</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="PayEaseDialogNegativeButton" parent="Widget.Material3.Button.TextButton">
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Base.Theme.PayEase" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorSecondary">@color/accent</item>
+
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowBackground">@color/background</item>
+
+        <item name="textInputStyle">@style/Widget.PayEase.TextInputLayout.OutlinedBox</item>
+        <item name="alertDialogTheme">@style/PayEaseAlertDialogTheme</item>
+        <item name="materialAlertDialogTheme">@style/PayEaseAlertDialogTheme</item>
+    </style>
+
+    <style name="Theme.PayEase" parent="Base.Theme.PayEase" />
+
+</resources>

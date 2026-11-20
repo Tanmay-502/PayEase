@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand Palette -->
+    <color name="primary">#1756D1</color>
+    <color name="primary_dark">#103B91</color>
+    <color name="accent">#087A55</color>
+    <color name="brand_green">#16B887</color>
+    <color name="brand_green_light">#E8F8F3</color>
+    <color name="background">#F4F6FA</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Typography & Contrast (WCAG AA Compliant) -->
+    <color name="text_primary">#172033</color>
+    <color name="text_secondary">#596579</color>
+    <color name="text_muted">#667085</color>
+    <color name="black">#172033</color>
+
+    <!-- Component Boundaries & States -->
+    <color name="input_border">#7F8A9A</color>
+    <color name="input_border_focused">#1756D1</color>
+    <color name="success">#087A55</color>
+    <color name="error">#B42318</color>
+
+    <!-- Financial Indicators -->
+    <color name="credit_green">#087A55</color>
+    <color name="debit_red">#B42318</color>
+    <color name="red">#B42318</color>
+    <color name="green">#087A55</color>
+</resources>
