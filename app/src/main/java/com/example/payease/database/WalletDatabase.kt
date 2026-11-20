@@ -14,7 +14,7 @@ class WalletDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     companion object {
         private const val DATABASE_NAME = "payease_wallet.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
 
         // User table
         private const val TABLE_USERS = "users"
@@ -43,6 +43,11 @@ class WalletDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         // Default initial bonus ₹500 (50000 paise) for new users
         private const val INITIAL_WALLET_BALANCE_PAISE = 50000L
+    }
+
+    override fun onConfigure(db: SQLiteDatabase) {
+        super.onConfigure(db)
+        db.setForeignKeyConstraintsEnabled(true)
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -82,13 +87,22 @@ class WalletDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.execSQL(createUsersTable)
         db.execSQL(createWalletTable)
         db.execSQL(createTransactionsTable)
+
+        // Create performance indexes
+        db.execSQL("CREATE INDEX IF NOT EXISTS idx_users_email ON $TABLE_USERS($KEY_EMAIL)")
+        db.execSQL("CREATE INDEX IF NOT EXISTS idx_wallet_user_id ON $TABLE_WALLET($KEY_WALLET_USER_ID)")
+        db.execSQL("CREATE INDEX IF NOT EXISTS idx_transactions_user_id ON $TABLE_TRANSACTIONS($KEY_TXN_USER_ID)")
+        db.execSQL("CREATE INDEX IF NOT EXISTS idx_transactions_timestamp ON $TABLE_TRANSACTIONS($KEY_TIMESTAMP DESC)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_TRANSACTIONS")
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_WALLET")
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_USERS")
-        onCreate(db)
+        // Non-destructive database migrations (never drop tables!)
+        if (oldVersion < 2) {
+            db.execSQL("CREATE INDEX IF NOT EXISTS idx_users_email ON $TABLE_USERS($KEY_EMAIL)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS idx_wallet_user_id ON $TABLE_WALLET($KEY_WALLET_USER_ID)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS idx_transactions_user_id ON $TABLE_TRANSACTIONS($KEY_TXN_USER_ID)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS idx_transactions_timestamp ON $TABLE_TRANSACTIONS($KEY_TIMESTAMP DESC)")
+        }
     }
 
     // Register User with initial wallet balance and welcome bonus transaction
@@ -225,7 +239,7 @@ class WalletDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
     }
 
-    // Add Money to Wallet (Transaction-safe)
+    // Add Money to Wallet (Transaction-safe & Overflow-protected)
     fun addMoney(userId: Long, amountPaise: Long, paymentSource: String): Pair<Boolean, String> {
         if (amountPaise <= 0) return Pair(false, "Amount must be greater than zero.")
 
@@ -233,7 +247,11 @@ class WalletDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.beginTransaction()
         return try {
             val currentBalance = getWalletBalancePaiseInternal(db, userId)
-            val newBalance = currentBalance + amountPaise
+            val newBalance = try {
+                Math.addExact(currentBalance, amountPaise)
+            } catch (_: ArithmeticException) {
+                return Pair(false, "Wallet balance overflow limit exceeded.")
+            }
 
             // Update balance
             val contentValues = ContentValues().apply {
@@ -276,7 +294,7 @@ class WalletDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
     }
 
-    // Send Money (Transaction-safe, checks negative balance)
+    // Send Money (Transaction-safe, re-checks balance inside DB transaction, Overflow-protected)
     fun sendMoney(
         userId: Long,
         recipientName: String,
@@ -294,7 +312,11 @@ class WalletDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 return Pair(false, "Insufficient wallet balance.")
             }
 
-            val newBalance = currentBalance - amountPaise
+            val newBalance = try {
+                Math.subtractExact(currentBalance, amountPaise)
+            } catch (_: ArithmeticException) {
+                return Pair(false, "Transaction arithmetic error.")
+            }
 
             // Update balance
             val contentValues = ContentValues().apply {

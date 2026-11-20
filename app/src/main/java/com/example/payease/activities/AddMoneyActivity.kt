@@ -21,7 +21,6 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import java.util.Locale
 
 class AddMoneyActivity : AppCompatActivity() {
 
@@ -85,11 +84,9 @@ class AddMoneyActivity : AppCompatActivity() {
     }
 
     private fun setAmount(valStr: String) {
-        val currentStr = etAmount.text.toString().trim()
-        val currentVal = currentStr.toDoubleOrNull() ?: 0.0
-        val addedVal = valStr.toDoubleOrNull() ?: 0.0
-        val newVal = currentVal + addedVal
-        etAmount.setText(String.format(Locale.US, "%.2f", newVal))
+        // Mutually exclusive quick selection (sets exact amount without floating point accumulation)
+        etAmount.setText(valStr)
+        etAmount.setSelection(valStr.length)
         tilAmount.error = null
     }
 
