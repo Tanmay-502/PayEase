@@ -15,10 +15,18 @@ import com.example.payease.database.WalletDatabase
 import com.example.payease.utils.AnimationUtils
 import com.example.payease.utils.CurrencyUtils
 import com.example.payease.utils.SessionManager
+import com.example.payease.utils.ValidationUtils
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.activity.enableEdgeToEdge
 
 class SendMoneyActivity : AppCompatActivity() {
 
@@ -44,7 +52,14 @@ class SendMoneyActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.activity_send_money)
+        
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
         db = WalletDatabase(this)
         sessionManager = SessionManager(this)
@@ -70,7 +85,11 @@ class SendMoneyActivity : AppCompatActivity() {
 
         AnimationUtils.applyTouchScale(btnSendMoneySubmit)
 
+        var lastClickTime = 0L
         btnSendMoneySubmit.setOnClickListener {
+            val now = System.currentTimeMillis()
+            if (now - lastClickTime < 1000) return@setOnClickListener
+            lastClickTime = now
             handleTransfer()
         }
     }
@@ -95,8 +114,8 @@ class SendMoneyActivity : AppCompatActivity() {
             return
         }
 
-        if (mobile.isEmpty()) {
-            tilRecipientMobile.error = "Recipient mobile number or UPI ID is required"
+        if (!ValidationUtils.isValidRecipientIdentifier(mobile)) {
+            tilRecipientMobile.error = "Enter a valid 10-digit mobile number or UPI ID (e.g. name@upi)"
             return
         }
 
@@ -143,27 +162,35 @@ class SendMoneyActivity : AppCompatActivity() {
         )
 
         if (success) {
-            showSuccessDialog(formattedAmount, recipientName, resultMessage)
+            showSuccessDialog(formattedAmount, recipientName, resultMessage, isDebit = true)
         } else {
             Toast.makeText(this, "Transfer Failed: $resultMessage", Toast.LENGTH_LONG).show()
         }
     }
 
-    private fun showSuccessDialog(amountStr: String, recipientName: String, refId: String) {
+    private fun showSuccessDialog(amountStr: String, recipientName: String, refId: String, isDebit: Boolean) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_transaction_success, null)
         val ivSuccessCheck = dialogView.findViewById<ImageView>(R.id.ivSuccessCheck)
         val tvSuccessTitle = dialogView.findViewById<TextView>(R.id.tvSuccessTitle)
         val tvSuccessAmount = dialogView.findViewById<TextView>(R.id.tvSuccessAmount)
+        val tvPartyLabel = dialogView.findViewById<TextView>(R.id.tvPartyLabel)
         val tvSuccessParty = dialogView.findViewById<TextView>(R.id.tvSuccessParty)
+        val tvSuccessTxnType = dialogView.findViewById<TextView>(R.id.tvSuccessTxnType)
         val tvSuccessRefId = dialogView.findViewById<TextView>(R.id.tvSuccessRefId)
+        val tvSuccessDateTime = dialogView.findViewById<TextView>(R.id.tvSuccessDateTime)
         val btnCopyRef = dialogView.findViewById<MaterialButton>(R.id.btnCopyRef)
         val btnShareReceipt = dialogView.findViewById<MaterialButton>(R.id.btnShareReceipt)
         val btnDone = dialogView.findViewById<MaterialButton>(R.id.btnDone)
 
         tvSuccessTitle.text = "Money Sent Successfully!"
         tvSuccessAmount.text = "-$amountStr"
+        tvPartyLabel.text = "Recipient"
         tvSuccessParty.text = recipientName
+        tvSuccessTxnType.text = "DEBIT (Transfer)"
         tvSuccessRefId.text = refId
+
+        val nowStr = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault()).format(Date())
+        tvSuccessDateTime.text = nowStr
 
         AnimationUtils.animateViewScalePunch(ivSuccessCheck)
 
@@ -185,7 +212,7 @@ class SendMoneyActivity : AppCompatActivity() {
                 putExtra(Intent.EXTRA_SUBJECT, "PayEase Payment Receipt - $refId")
                 putExtra(
                     Intent.EXTRA_TEXT,
-                    "PayEase Wallet Transfer Receipt\nAmount Sent: -$amountStr\nRecipient: $recipientName\nReference ID: $refId\nStatus: COMPLETED"
+                    "PayEase Wallet Transfer Receipt\nAmount Sent: -$amountStr\nRecipient: $recipientName\nReference ID: $refId\nDate: $nowStr\nStatus: COMPLETED (Simulated)"
                 )
             }
             startActivity(Intent.createChooser(shareIntent, "Share Receipt Via"))

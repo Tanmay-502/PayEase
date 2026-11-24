@@ -21,6 +21,13 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.activity.enableEdgeToEdge
 
 class AddMoneyActivity : AppCompatActivity() {
 
@@ -40,7 +47,14 @@ class AddMoneyActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.activity_add_money)
+        
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
         db = WalletDatabase(this)
         sessionManager = SessionManager(this)
@@ -73,7 +87,11 @@ class AddMoneyActivity : AppCompatActivity() {
         btnChip2000.setOnClickListener { setAmount("2000") }
         btnChip5000.setOnClickListener { setAmount("5000") }
 
+        var lastClickTime = 0L
         btnAddMoneySubmit.setOnClickListener {
+            val now = System.currentTimeMillis()
+            if (now - lastClickTime < 1000) return@setOnClickListener
+            lastClickTime = now
             handleTopUp()
         }
     }
@@ -134,16 +152,24 @@ class AddMoneyActivity : AppCompatActivity() {
         val ivSuccessCheck = dialogView.findViewById<ImageView>(R.id.ivSuccessCheck)
         val tvSuccessTitle = dialogView.findViewById<TextView>(R.id.tvSuccessTitle)
         val tvSuccessAmount = dialogView.findViewById<TextView>(R.id.tvSuccessAmount)
+        val tvPartyLabel = dialogView.findViewById<TextView>(R.id.tvPartyLabel)
         val tvSuccessParty = dialogView.findViewById<TextView>(R.id.tvSuccessParty)
+        val tvSuccessTxnType = dialogView.findViewById<TextView>(R.id.tvSuccessTxnType)
         val tvSuccessRefId = dialogView.findViewById<TextView>(R.id.tvSuccessRefId)
+        val tvSuccessDateTime = dialogView.findViewById<TextView>(R.id.tvSuccessDateTime)
         val btnCopyRef = dialogView.findViewById<MaterialButton>(R.id.btnCopyRef)
         val btnShareReceipt = dialogView.findViewById<MaterialButton>(R.id.btnShareReceipt)
         val btnDone = dialogView.findViewById<MaterialButton>(R.id.btnDone)
 
         tvSuccessTitle.text = "Money Added Successfully!"
         tvSuccessAmount.text = "+$amountStr"
+        tvPartyLabel.text = "Source"
         tvSuccessParty.text = source
+        tvSuccessTxnType.text = "CREDIT (Top-Up)"
         tvSuccessRefId.text = refId
+
+        val nowStr = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault()).format(Date())
+        tvSuccessDateTime.text = nowStr
 
         AnimationUtils.animateViewScalePunch(ivSuccessCheck)
 
@@ -165,7 +191,7 @@ class AddMoneyActivity : AppCompatActivity() {
                 putExtra(Intent.EXTRA_SUBJECT, "PayEase Receipt - $refId")
                 putExtra(
                     Intent.EXTRA_TEXT,
-                    "PayEase Wallet Receipt\nTop-Up Amount: +$amountStr\nSource: $source\nReference ID: $refId\nStatus: COMPLETED"
+                    "PayEase Wallet Receipt\nTop-Up Amount: +$amountStr\nSource: $source\nReference ID: $refId\nDate: $nowStr\nStatus: COMPLETED (Simulated)"
                 )
             }
             startActivity(Intent.createChooser(shareIntent, "Share Receipt Via"))

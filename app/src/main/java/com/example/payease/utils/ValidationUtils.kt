@@ -11,6 +11,7 @@ object ValidationUtils {
     private const val SALT_LENGTH = 16
 
     private val EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$".toRegex()
+    private val UPI_REGEX = "^[a-zA-Z0-9.\\-_]{2,256}@[a-zA-Z]{2,64}$".toRegex()
 
     fun isValidEmail(email: String): Boolean {
         return email.isNotBlank() && EMAIL_REGEX.matches(email.trim())
@@ -19,6 +20,15 @@ object ValidationUtils {
     fun isValidMobile(mobile: String): Boolean {
         val digitsOnly = mobile.replace("\\s+".toRegex(), "").replace("-", "")
         return digitsOnly.length == 10 && digitsOnly.all { it.isDigit() }
+    }
+
+    fun isValidUpiId(upiId: String): Boolean {
+        return upiId.isNotBlank() && UPI_REGEX.matches(upiId.trim())
+    }
+
+    fun isValidRecipientIdentifier(identifier: String): Boolean {
+        val trimmed = identifier.trim()
+        return isValidMobile(trimmed) || isValidUpiId(trimmed)
     }
 
     fun isValidPassword(password: String): Boolean {

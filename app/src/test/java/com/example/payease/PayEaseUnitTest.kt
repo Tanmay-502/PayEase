@@ -12,12 +12,18 @@ import org.junit.Test
 class PayEaseUnitTest {
 
     @Test
-    fun testCurrencyRupeesToPaiseConversion() {
+    fun testStrictCurrencyRupeesToPaiseConversion() {
         assertEquals(50000L, CurrencyUtils.rupeesToPaise("500"))
         assertEquals(50050L, CurrencyUtils.rupeesToPaise("500.50"))
-        assertEquals(100000L, CurrencyUtils.rupeesToPaise("₹ 1,000"))
+        assertEquals(100000L, CurrencyUtils.rupeesToPaise("₹ 1,000.00"))
+
+        // Strict rejection cases
         assertEquals(0L, CurrencyUtils.rupeesToPaise("0"))
+        assertEquals(0L, CurrencyUtils.rupeesToPaise("0.00"))
         assertEquals(0L, CurrencyUtils.rupeesToPaise("-500"))
+        assertEquals(0L, CurrencyUtils.rupeesToPaise("500abc"))
+        assertEquals(0L, CurrencyUtils.rupeesToPaise("50.25.10"))
+        assertEquals(0L, CurrencyUtils.rupeesToPaise("500.555"))
         assertEquals(0L, CurrencyUtils.rupeesToPaise(""))
         assertEquals(0L, CurrencyUtils.rupeesToPaise("abc"))
         assertEquals(0L, CurrencyUtils.rupeesToPaise("999999999999999999999999999"))
@@ -43,6 +49,23 @@ class PayEaseUnitTest {
         assertTrue(ValidationUtils.isValidMobile("98765-43210"))
         assertFalse(ValidationUtils.isValidMobile("12345"))
         assertFalse(ValidationUtils.isValidMobile("abcdefghij"))
+    }
+
+    @Test
+    fun testRecipientIdentifierValidation() {
+        // Mobile number
+        assertTrue(ValidationUtils.isValidRecipientIdentifier("9876543210"))
+        assertTrue(ValidationUtils.isValidRecipientIdentifier("98765-43210"))
+
+        // UPI ID
+        assertTrue(ValidationUtils.isValidRecipientIdentifier("user@upi"))
+        assertTrue(ValidationUtils.isValidRecipientIdentifier("john.doe@okicici"))
+        assertTrue(ValidationUtils.isValidRecipientIdentifier("9876543210@paytm"))
+
+        // Invalid cases
+        assertFalse(ValidationUtils.isValidRecipientIdentifier("invalid_id"))
+        assertFalse(ValidationUtils.isValidRecipientIdentifier("user@"))
+        assertFalse(ValidationUtils.isValidRecipientIdentifier(""))
     }
 
     @Test

@@ -10,39 +10,42 @@ import com.example.payease.models.User
 import com.example.payease.utils.ValidationUtils
 import java.util.UUID
 
-class WalletDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class WalletDatabase(
+    context: Context,
+    dbName: String = DATABASE_NAME
+) : SQLiteOpenHelper(context, dbName, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_NAME = "payease_wallet.db"
-        private const val DATABASE_VERSION = 2
+        const val DATABASE_NAME = "payease_wallet.db"
+        const val DATABASE_VERSION = 2
 
         // User table
-        private const val TABLE_USERS = "users"
-        private const val KEY_USER_ID = "user_id"
-        private const val KEY_FULL_NAME = "full_name"
-        private const val KEY_EMAIL = "email"
-        private const val KEY_MOBILE = "mobile"
-        private const val KEY_PASSWORD_HASH = "password_hash"
+        const val TABLE_USERS = "users"
+        const val KEY_USER_ID = "user_id"
+        const val KEY_FULL_NAME = "full_name"
+        const val KEY_EMAIL = "email"
+        const val KEY_MOBILE = "mobile"
+        const val KEY_PASSWORD_HASH = "password_hash"
 
         // Wallet table
-        private const val TABLE_WALLET = "wallet"
-        private const val KEY_WALLET_ID = "wallet_id"
-        private const val KEY_WALLET_USER_ID = "user_id"
-        private const val KEY_BALANCE_PAISE = "balance_paise"
+        const val TABLE_WALLET = "wallet"
+        const val KEY_WALLET_ID = "wallet_id"
+        const val KEY_WALLET_USER_ID = "user_id"
+        const val KEY_BALANCE_PAISE = "balance_paise"
 
         // Transactions table
-        private const val TABLE_TRANSACTIONS = "transactions"
-        private const val KEY_TXN_ID = "transaction_id"
-        private const val KEY_TXN_REF_ID = "reference_id"
-        private const val KEY_TXN_USER_ID = "user_id"
-        private const val KEY_TXN_TYPE = "transaction_type"
-        private const val KEY_RECIPIENT_NAME = "recipient_name"
-        private const val KEY_AMOUNT_PAISE = "amount_paise"
-        private const val KEY_DESCRIPTION = "description"
-        private const val KEY_TIMESTAMP = "timestamp"
+        const val TABLE_TRANSACTIONS = "transactions"
+        const val KEY_TXN_ID = "transaction_id"
+        const val KEY_TXN_REF_ID = "reference_id"
+        const val KEY_TXN_USER_ID = "user_id"
+        const val KEY_TXN_TYPE = "transaction_type"
+        const val KEY_RECIPIENT_NAME = "recipient_name"
+        const val KEY_AMOUNT_PAISE = "amount_paise"
+        const val KEY_DESCRIPTION = "description"
+        const val KEY_TIMESTAMP = "timestamp"
 
         // Default initial bonus ₹500 (50000 paise) for new users
-        private const val INITIAL_WALLET_BALANCE_PAISE = 50000L
+        const val INITIAL_WALLET_BALANCE_PAISE = 50000L
     }
 
     override fun onConfigure(db: SQLiteDatabase) {

@@ -12,18 +12,14 @@ object AnimationUtils {
 
     @SuppressLint("ClickableViewAccessibility")
     fun applyTouchScale(view: View) {
-        val springX = SpringAnimation(view, DynamicAnimation.SCALE_X).apply {
-            spring = SpringForce().apply {
-                stiffness = SpringForce.STIFFNESS_MEDIUM
-                dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY
-            }
+        val springX = SpringAnimation(view, DynamicAnimation.SCALE_X, 1.0f).apply {
+            spring.stiffness = SpringForce.STIFFNESS_MEDIUM
+            spring.dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY
         }
 
-        val springY = SpringAnimation(view, DynamicAnimation.SCALE_Y).apply {
-            spring = SpringForce().apply {
-                stiffness = SpringForce.STIFFNESS_MEDIUM
-                dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY
-            }
+        val springY = SpringAnimation(view, DynamicAnimation.SCALE_Y, 1.0f).apply {
+            spring.stiffness = SpringForce.STIFFNESS_MEDIUM
+            spring.dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY
         }
 
         view.setOnTouchListener { v, event ->
@@ -50,18 +46,14 @@ object AnimationUtils {
         view.scaleY = 0.85f
 
         SpringAnimation(view, DynamicAnimation.SCALE_X, 1.0f).apply {
-            spring = SpringForce().apply {
-                stiffness = SpringForce.STIFFNESS_MEDIUM
-                dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY
-            }
+            spring.stiffness = SpringForce.STIFFNESS_MEDIUM
+            spring.dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY
             start()
         }
 
         SpringAnimation(view, DynamicAnimation.SCALE_Y, 1.0f).apply {
-            spring = SpringForce().apply {
-                stiffness = SpringForce.STIFFNESS_MEDIUM
-                dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY
-            }
+            spring.stiffness = SpringForce.STIFFNESS_MEDIUM
+            spring.dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY
             start()
         }
     }

@@ -31,7 +31,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_nav_home"
+                    android:src="@drawable/ic_arrow_back"
                     app:tint="@color/text_primary"
                     android:padding="8dp"
                     android:contentDescription="Back"/>

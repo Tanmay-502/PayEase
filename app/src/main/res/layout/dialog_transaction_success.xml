@@ -34,7 +34,7 @@
         android:layout_marginTop="6dp"
         android:text="₹ 500.00"
         android:textColor="@color/primary"
-        android:textSize="32sp"
+        android:textSize="30sp"
         android:textStyle="bold"/>
 
     <!-- Receipt Details Card -->
@@ -54,7 +54,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Row 1: Party / Source -->
+            <!-- Row 1: Party / Source / Recipient -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -62,9 +62,10 @@
                 android:gravity="center_vertical">
 
                 <TextView
+                    android:id="@+id/tvPartyLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.35"
+                    android:layout_weight="0.38"
                     android:text="Recipient / Source"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp"/>
@@ -73,7 +74,7 @@
                     android:id="@+id/tvSuccessParty"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.65"
+                    android:layout_weight="0.62"
                     android:gravity="end"
                     android:text="Rahul Sharma"
                     android:textColor="@color/text_primary"
@@ -85,11 +86,11 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:background="#EDF2F7"/>
 
-            <!-- Row 2: Reference ID -->
+            <!-- Row 2: Transaction Type -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -99,7 +100,42 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.35"
+                    android:layout_weight="0.38"
+                    android:text="Transaction Type"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"/>
+
+                <TextView
+                    android:id="@+id/tvSuccessTxnType"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.62"
+                    android:gravity="end"
+                    android:text="CREDIT (Top-Up)"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="#EDF2F7"/>
+
+            <!-- Row 3: Reference ID -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.38"
                     android:text="Reference ID"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp"/>
@@ -108,7 +144,7 @@
                     android:id="@+id/tvSuccessRefId"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.65"
+                    android:layout_weight="0.62"
                     android:gravity="end"
                     android:text="PEPAY123456"
                     android:textColor="@color/primary"
@@ -120,11 +156,11 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:background="#EDF2F7"/>
 
-            <!-- Row 3: Status -->
+            <!-- Row 4: Date & Time -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -134,19 +170,55 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.35"
+                    android:layout_weight="0.38"
+                    android:text="Date &amp; Time"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"/>
+
+                <TextView
+                    android:id="@+id/tvSuccessDateTime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.62"
+                    android:gravity="end"
+                    android:text="30 Mar 2025, 10:30 AM"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="#EDF2F7"/>
+
+            <!-- Row 5: Status -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.38"
                     android:text="Status"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp"/>
 
                 <TextView
+                    android:id="@+id/tvSuccessStatus"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.65"
+                    android:layout_weight="0.62"
                     android:gravity="end"
-                    android:text="COMPLETED"
+                    android:text="COMPLETED (Simulated)"
                     android:textColor="@color/accent"
-                    android:textSize="13sp"
+                    android:textSize="12sp"
                     android:textStyle="bold"/>
 
             </LinearLayout>
@@ -155,11 +227,22 @@
 
     </com.google.android.material.card.MaterialCardView>
 
+    <!-- Academic Disclaimer -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:text="Academic demonstration only. No real money is transferred."
+        android:textColor="#B45309"
+        android:textSize="11sp"
+        android:textStyle="bold"/>
+
     <!-- Quick Receipt Actions: Copy Ref & Share -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="14dp"
         android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
@@ -204,7 +287,7 @@
         android:id="@+id/btnDone"
         android:layout_width="match_parent"
         android:layout_height="54dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="12dp"
         android:text="Done"
         android:textColor="@color/white"
         android:textSize="15sp"
